@@ -4,7 +4,6 @@ function drawObjects(data) {
     let scale = 1;
     let planetRadiusScale = .01;    // 1 - real radius in km  .005
     let orbitRadiusScale = 1500;    // 149 000 000 - real radius in km. Database in AU, 1AU = 149 000 000 km
-
     let sunRadius = 200;            // 200 is not real scale, just for animation, real is 1009.3
     let sizeSkySphere = 1000000;    // radius of Sky sphere box
 
@@ -17,16 +16,13 @@ function drawObjects(data) {
         sky.material.side = THREE.BackSide;
         scene.add(sky);
     }
-
     drawSky();
 
 // Create a Sun
     function drawSun(customMaterial) {
         const light = new THREE.PointLight(0xffffff, 1);
         light.position.set(0, 0, 0);                    // Set the position of the light to simulate the sun's position
-        // light.castShadow = true;
         scene.add(light);                                       // Add the light to the scene
-
 
         // // Create a sphere to represent the sun
         const sunGeometry = new THREE.SphereGeometry(sunRadius, 64, 64); // у 100 разів менше від реального
@@ -41,27 +37,22 @@ function drawObjects(data) {
         scene.add(sun);
         return sun;
     }
-
     objects["Sun"] = drawSun();
 
 
 // Create planets, moons, and orbits
     function drawPlanets(solarBodies) {
         let data = solarBodies.filter(item => (item.parent === "Sun" && item.name !== "Sun"));
-        console.log(data);
 
         data.forEach(body => {
             const geo = new THREE.SphereGeometry(body.radius * planetRadiusScale, 64, 64);
             const mat = new THREE.MeshPhongMaterial({
                 map: new THREE.TextureLoader().load(body.material.diffuse.map),
-                // castShadow: true,
-                // receiveShadow: true
             })
             const mesh = new THREE.Mesh(geo, mat);
             const obj = new THREE.Object3D();
             obj.add(mesh);
             scene.add(obj);
-            // mesh.position.x = body.orbit.semiMajorAxis * orbitRadiusScale;
 
             let semiMajor = body.orbit.semiMajorAxis * orbitRadiusScale;
             const a = semiMajor * (1 + (body.orbit.eccentricity))
@@ -75,23 +66,8 @@ function drawObjects(data) {
             // set planet inclination of orbit
             obj.rotation.x = body.orbit.inclination * (Math.PI / 180);
 
-            // // Add atmosphere
-            // console.log(body.name)
-            // // // if (body.atmosphere && body.atmosphere.cloud){
-            // // if (body.name === "Venus" || body.name === "Earth"){
-            //     const atmosphereGeometry = new THREE.SphereGeometry(((body.radius + body.radius / 20) * planetRadiusScale), 300, 300);
-            //     const atmosphereMaterial = new THREE.MeshLambertMaterial({
-            //         // map: new THREE.TextureLoader().load(body.atmosphere.cloud.map),
-            //         transparent: true, opacity: 0.1, color: 0x6666ff
-            //     })
-            //     const atmosphereMesh = new THREE.Mesh(atmosphereGeometry, atmosphereMaterial);
-            //     mesh.add(atmosphereMesh);
-            //     // ringMesh.rotation.x = -0.5 * Math.PI;
-            // // }
-
-            // add ring
-            // if (body.ring) {                                         // for all planet with rings
-            if (body.name === "Saturn") {                               // only for Saturn
+            // add rings
+            if (body.name === "Saturn") {
                 const ringGeometry = new THREE.RingGeometry(
                     body.ring.lower * planetRadiusScale,
                     body.ring.higher * planetRadiusScale,
@@ -116,8 +92,8 @@ function drawObjects(data) {
             const rotationPeriod = body.rotation.period;
             let time = 0;                                   // for count current position
             let rotationInclination = body.rotation.inclination;
-
-            objects[`${body.name}`] = {mesh, obj, orbitPeriod, rotationPeriod, orbitPath, time, rotationInclination};
+            let planetRadius  = body.radius;
+            objects[`${body.name}`] = {mesh, obj, orbitPeriod, rotationPeriod, orbitPath, time, rotationInclination, planetRadius};
         })
     }
     drawPlanets(solarBodies);
@@ -158,7 +134,6 @@ function drawObjects(data) {
 // moons
     function drawMoons() {
         let data = solarBodies.filter(item => item.type === "moon");
-        console.log(data);
 
         data.forEach(body => {
             const parent = objects[`${body.parent}`];
@@ -169,46 +144,26 @@ function drawObjects(data) {
             });
             const mesh = new THREE.Mesh(geo, mat);
 
-
             const obj = new THREE.Object3D();
-            obj.position.x = parent.mesh.position.x;
-            // obj.position.y = parent.mesh.position.y;
-            // obj.position.y = 0;
-            // obj.position.z = parent.mesh.position.z;
+            obj.position = parent.mesh.position;
 
             obj.add(mesh);
-            // parent.mesh.add(obj)
             scene.add(obj);
-            // console.log(`obj = ${obj}`)
-
-            // parent.mesh.add(mesh);
-
             mesh.position.x = body.orbit.semiMajorAxis;
-            mesh.position.y = 0;
-            mesh.position.z = 0;
-            // obj.rotation.y = body.orbit.inclination  * (Math.PI / 180);
-            // obj.rotation.x = parent.rotationInclination * (Math.PI / 180);
 
             const period = body.orbit.period;
-
-            parent.mesh.add(mesh) // new
             objects[`${body.name}`] = { mesh, obj, parent, period};
-            // console.log(objects);
         });
     }
 
     drawMoons();
 
-
     function getRandomColor() {
         var letters = '0123456789ABCDEF';
         var color = '#';
-        for (var i = 0; i < 6; i++) {
-            color += letters[Math.floor(Math.random() * 16)];
-        }
+        for (var i = 0; i < 6; i++) color += letters[Math.floor(Math.random() * 16)];
         return color;
     }
-
     return objects;
 }
 

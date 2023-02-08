@@ -353,7 +353,7 @@ solarBodies = [
             period: 10747,
             semiMajorAxis: 9.5826,
             eccentricity: 0.0542,
-            inclination: 2.4845//2.4845
+            inclination: 0//2.4845
         },
         rotation: {
             period: 0.444,
@@ -439,7 +439,7 @@ solarBodies = [
             period: 30589,
             semiMajorAxis: 19.1818,
             eccentricity: 0.0472,
-            inclination: 0.7699
+            inclination: 0 // 0.7699
         },
         rotation: {
             period: -0.718,
@@ -473,7 +473,7 @@ solarBodies = [
             period: 59800,
             semiMajorAxis: 30.0685,
             eccentricity: 0.0097,
-            inclination: 1.7692
+            inclination: 0 // 1.7692
         },
         rotation: {
             period: 0.67,
@@ -630,7 +630,7 @@ solarBodies = [
     },
     {
         name: "Charon",
-        type: "moon",
+        // type: "moon",
         radius: 606,
         parent: "Pluto",
         shineColor: 0xff9988,

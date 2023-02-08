@@ -20,8 +20,16 @@ const scene = new THREE.Scene();
 // Create the camera
 const camera = new THREE.PerspectiveCamera(55, width / height, 0.1, 2000000);
 camera.position.z = cameraDistance;
-camera.position.y = 4;
+camera.position.y = 5000;
 camera.lookAt(0, 0, 0);
+
+let previousMouseX;
+let previousMouseY;
+let cameraRotationX = 0;
+let cameraRotationY = 0;
+let isRunning = true;                                   // Space to stop/start animation
+let earthRotationSpeed = .01;
+let isMouseDown = false;
 
 
 

@@ -1,8 +1,8 @@
-function control() {
+function control(body) {
 
     // Add mouse and scroll event listeners to change camera position
-    let isMouseDown = false;
-// listeners
+    // let isMouseDown = false;
+
     window.addEventListener('resize', function () {
         // Update the camera's aspect ratio
         camera.aspect = window.innerWidth / window.innerHeight;
@@ -16,12 +16,12 @@ function control() {
     });
     canvas.addEventListener('mousewheel', onMouseWheel);
     canvas.addEventListener('keypress', onKeyPress);
-    let previousMouseX;
-    let previousMouseY;
-    let cameraRotationX = 0;
-    let cameraRotationY = 0;
-    let isRunning = true;                                   // Space to stop/start animation
-    let earthRotationSpeed = .01;
+    // let previousMouseX;
+    // let previousMouseY;
+    // let cameraRotationX = 0;
+    // let cameraRotationY = 0;
+    // let isRunning = true;                                   // Space to stop/start animation
+    // let earthRotationSpeed = .01;
 
 
     // onMouseDown
@@ -58,11 +58,17 @@ function control() {
     }
 
 
-    function updateCameraPosition() {
+    function updateCameraPosition(data) {
         camera.position.x = (cameraDistance * Math.sin(cameraRotationY) * Math.cos(cameraRotationX));
         camera.position.y = cameraDistance * Math.sin(cameraRotationX);
         camera.position.z = cameraDistance * Math.cos(cameraRotationY) * Math.cos(cameraRotationX);
         camera.lookAt(0, 0, 0);
+
+        // camera.position.x = object.position.x + cameraDistance * Math.sin(cameraRotationY) * Math.cos(cameraRotationX);
+        // camera.position.y = object.position.y + cameraDistance * Math.sin(cameraRotationX);
+        // camera.position.z = object.position.z + cameraDistance * Math.cos(cameraRotationY) * Math.cos(cameraRotationX);
+        // camera.lookAt(object);
+
     }
 
 // stop/start animation

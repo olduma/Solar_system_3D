@@ -4,4 +4,5 @@ document.addEventListener("DOMContentLoaded", () => {
     let objects = drawObjects(dataBase);
     control();
     animation(objects);
+
 });
